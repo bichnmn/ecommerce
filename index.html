@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z2W4LF9QKG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-Z2W4LF9QKG');
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo cáo Phân tích Thị trường TMĐT | Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .chart-container { position: relative; height: 300px; width: 100%; }
+        .custom-scrollbar::-webkit-scrollbar { height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e5e7eb; border-radius: 10px; }
+        
+        .tab-button { transition: all 0.3s ease; }
+        .tab-button.active {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #000;
+            border-radius: 12px;
+        }
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body class="text-slate-800 antialiased">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Báo cáo Phân tích Thị trường TMĐT</h1>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Chu kỳ: <span class="font-medium text-slate-700">01-10-2025</span> đến <span class="font-medium text-slate-700">31-12-2025</span>
+                        <span class="mx-2 text-slate-300">|</span>
+                        So sánh: 01-10-2024 - 31-12-2024
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto pb-2">
+                <button onclick="switchTab('overview')" class="tab-button active flex-shrink-0 px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 border border-slate-200" id="tab-overview">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    📊 Tổng quan Thị trường
+                </button>
+                <button onclick="switchTab('video')" class="tab-button flex-shrink-0 px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 border border-slate-200" id="tab-video">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    🎬 Video Phân tích Chuyên sâu
+                </button>
+                <button onclick="switchTab('document')" class="tab-button flex-shrink-0 px-6 py-3 rounded-lg font-semibold text-sm flex items-center gap-2 border border-slate-200" id="tab-document">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    📚 Tài liệu đọc
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- TAB 1: TỔNG QUAN (TOÀN BỘ NỘI DUNG GỐC) -->
+        <div id="content-overview" class="tab-content active">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-transform hover:scale-[1.02]">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Doanh số (VNĐ)</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2 leading-none">124.245.682.868.170</h3>
+                    <div class="flex items-center text-emerald-600 font-bold text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-9 9-4-4-6 6"></path></svg>
+                        29% <span class="text-slate-400 font-normal ml-2">so với cùng kỳ</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-transform hover:scale-[1.02]">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Sản phẩm đã bán</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2 leading-none">1.033.510.022</h3>
+                    <div class="flex items-center text-emerald-600 font-bold text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-9 9-4-4-6 6"></path></svg>
+                        3% <span class="text-slate-400 font-normal ml-2">so với cùng kỳ</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-transform hover:scale-[1.02]">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Sản phẩm có lượt bán</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2 leading-none">13.680.348</h3>
+                    <div class="flex items-center text-rose-600 font-bold text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-9-9-4 4-6-6"></path></svg>
+                        16% <span class="text-slate-400 font-normal ml-2">so với cùng kỳ</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 transition-transform hover:scale-[1.02]">
+                    <p class="text-sm font-medium text-slate-500 mb-2">Gian hàng có lượt bán</p>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2 leading-none">511.541</h3>
+                    <div class="flex items-center text-rose-600 font-bold text-sm">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0v-8m0 8l-9-9-4 4-6-6"></path></svg>
+                        11% <span class="text-slate-400 font-normal ml-2">so với cùng kỳ</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-orange-500 rounded-full"></span>
+                        Thị phần theo Doanh số (VNĐ)
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        <span class="w-1 h-6 bg-slate-800 rounded-full"></span>
+                        Thị phần theo Sản phẩm đã bán (Triệu sp)
+                    </h4>
+                    <div class="chart-container">
+                        <canvas id="unitsSoldChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-10">
+                <h4 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="w-1 h-6 bg-blue-500 rounded-full"></span>
+                    Top Ngành hàng (Triệu sản phẩm)
+                </h4>
+                <div style="height: 500px; width: 100%;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="text-lg font-bold text-slate-800 mb-6">Phân khúc Mức giá (VNĐ)</h4>
+                    <div class="h-[350px]">
+                        <canvas id="priceRangeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col">
+                    <h4 class="text-lg font-bold text-slate-800 mb-6">Kiểu gian hàng</h4>
+                    <div class="flex-grow">
+                        <canvas id="shopTypeChart"></canvas>
+                    </div>
+                    <div class="mt-6 space-y-3 pt-6 border-t border-slate-50">
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2 text-sm text-slate-600">
+                                <span class="w-3 h-3 rounded-full bg-slate-300"></span> Thường
+                            </span>
+                            <span class="font-bold text-slate-800">80.5%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="flex items-center gap-2 text-sm text-slate-600">
+                                <span class="w-3 h-3 rounded-full bg-orange-500"></span> Chính hãng
+                            </span>
+                            <span class="font-bold text-slate-800">19.5%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-10">
+                <h4 class="text-lg font-bold text-slate-800 mb-6">Top Vùng miền bán chạy</h4>
+                <p class="text-sm text-slate-500 mb-6">Số sản phẩm đã bán</p>
+                <div class="h-[300px]">
+                    <canvas id="regionChart"></canvas>
+                </div>
+            </div>
+
+            <div class="space-y-10">
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-slate-800">Sản phẩm bán chạy</h2>
+                        <a href="data.csv" download class="text-blue-600 text-sm font-semibold hover:underline">Tải dữ liệu chuyên sâu</a>
+                    </div>
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50">
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Sản phẩm</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Giá bán</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Doanh số kỳ này</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Đã bán</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Tổng doanh số</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate">Điện thoại Apple iPhone 16 Pro Max 256GB</td>
+                                    <td class="px-6 py-4 text-center font-medium">34.999.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">982,6 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 2%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">30.939</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 2%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500">5.203 tỷ ₫</td>
+                                </tr>
+
+                                <!-- <tr class="bg-orange-50/40 hover:bg-orange-100/40 transition-colors"> -->
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate">Điện thoại Apple iPhone 17 Pro Max 256GB</td>
+                                    <td class="px-6 py-4 text-center font-medium">37.990.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">581,5 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-bold">↗ 1518%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">15.063</span>
+                                            <!-- <span class="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full font-bold">↗ 1514%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500 font-medium">778 tỷ ₫</td>
+                                </tr>
+
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate">Điện thoại Apple iPhone 15 128GB</td>
+                                    <td class="px-6 py-4 text-center font-medium">17.699.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">132 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] text-rose-600 font-bold">↘ 42%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">7.565</span>
+                                            <!-- <span class="text-[10px] text-rose-600 font-bold">↘ 42%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500">635 tỷ ₫</td>
+                                </tr>
+
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate"> Thùng 6 Bịch Khăn Giấy Rút Đáy Tiểu Hạ TOP GIA</td>
+                                    <td class="px-6 py-4 text-center font-medium">129.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">86,9 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 21%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">674.297</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 39%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500">157 tỷ ₫</td>
+                                </tr>
+
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate"> THÙNG 24 CHAI SỮA ENSURE HƯƠNG VANI DẠNG LỎNG 237ML</td>
+                                    <td class="px-6 py-4 text-center font-medium">1.500.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">81,9 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 21%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">69.532</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 39%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500">103 tỷ ₫</td>
+                                </tr>
+                                <tr class="hover:bg-slate-50 transition-colors">
+                                    <td class="px-6 py-4 font-semibold text-slate-800 max-w-xs truncate"> Nước giặt OMO Matic Hương Nước Hoa Comfort 4.1KG  túi</td>
+                                    <td class="px-6 py-4 text-center font-medium">340.000₫</td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">77 tỷ ₫</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 21%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="font-bold text-slate-900">273.107</span>
+                                            <!-- <span class="text-[10px] text-emerald-600 font-bold">↗ 39%</span> -->
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-slate-500">452 tỷ ₫</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-center">
+                        <a href="data.csv" download class="flex items-center gap-2 text-slate-600 text-sm font-bold hover:text-orange-600 transition-all cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                            TẢI DANH SÁCH CHI TIẾT
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                        <h2 class="text-xl font-bold text-slate-800">Gian hàng xuất sắc</h2>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/50">
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase">Tên shop</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-center">Nơi bán</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Doanh số (Kỳ này)</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Tổng Doanh số</th>
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase text-right">Tổng lượt bán</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 text-sm">
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">Apple Flagship Store</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">Shopee</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">1.430,6 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">10.287 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">605.344</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">Viettel Store - AAR</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">Shopee</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">585,9 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">3.566 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">192.379</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">vinamilk_official</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">Shopee</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">366,4 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">1.510 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">3.706.273</td>
+                                </tr>
+                                 <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">Con Cưng Official Store</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">Shopee</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">326,6 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">1.137 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">4.698.366</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">TOPGIAHN</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-slate-800 text-white text-xs font-medium">TikTok</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">314,4 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">1.412 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">10.084.369</td>
+                                </tr>
+                                
+                               
+                                <tr>
+                                    <td class="px-6 py-4 font-bold text-blue-600">ShopDunk Official Store</td>
+                                    <td class="py-4 px-6 text-center"><span class="inline-block px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">Shopee</span></td>
+                                    <td class="px-6 py-4 text-right font-bold">304.5 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">3.200 tỷ ₫</td>
+                                    <td class="px-6 py-4 text-right text-slate-600">172.957</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6">Top Thương hiệu hàng đầu</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        
+                        <!-- BRAND CARDS - Giữ nguyên toàn bộ 20 brand từ file gốc -->
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-3xl font-black text-orange-600">APPLE</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Apple</h5>
+                                    <span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-1 rounded">Rank #1</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">269.808</span></div>
+                                    <div class="flex justify-between text-orange-600"><span>Doanh số kỳ:</span> <span class="font-bold">2.893 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-slate-700 to-slate-900 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-3xl font-black text-white">SAMSUNG</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Samsung</h5>
+                                    <span class="bg-slate-50 text-slate-700 text-[10px] font-bold px-2 py-1 rounded">Rank #2</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">588.672</span></div>
+                                    <div class="flex justify-between text-slate-800"><span>Doanh số kỳ:</span> <span class="font-bold">1.295 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-3xl font-black text-blue-600">XIAOMI</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Xiaomi</h5>
+                                    <span class="bg-slate-50 text-slate-700 text-[10px] font-bold px-2 py-1 rounded">Rank #3</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">377.746</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">673 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-cyan-50 to-cyan-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-3xl font-black text-cyan-600">TOPGIA</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Top Gia</h5>
+                                    <span class="bg-slate-50 text-slate-700 text-[10px] font-bold px-2 py-1 rounded">Rank #4</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">4.950.081</span></div>
+                                    <div class="flex justify-between text-cyan-600"><span>Doanh số kỳ:</span> <span class="font-bold">591 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-red-50 to-red-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-2xl font-black text-red-600">COCOON</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Cocoon</h5>
+                                    <span class="bg-red-50 text-red-700 text-[10px] font-bold px-2 py-1 rounded">Rank #5</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">1.757.181</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">458 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-pink-50 to-pink-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-2xl font-black text-pink-600">HUGGIES</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Huggies</h5>
+                                    <span class="bg-pink-50 text-pink-700 text-[10px] font-bold px-2 py-1 rounded">Rank #6</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">1.205.532
+</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">454 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-2xl font-black text-purple-600">VINAMILK</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Pond's</h5>
+                                    <span class="bg-purple-50 text-purple-700 text-[10px] font-bold px-2 py-1 rounded">Rank #7</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">1.211.367</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">424 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-2xl font-black text-indigo-600">ENSURE</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Ensure</h5>
+                                    <span class="bg-indigo-50 text-indigo-700 text-[10px] font-bold px-2 py-1 rounded">Rank #8</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">417.024</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">412 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-teal-50 to-teal-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-teal-600">L'OREAL PARIS</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">L'Oreal Paris</h5>
+                                    <span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded">Rank #9</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">41.432.851</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">409 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-violet-50 to-violet-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-violet-600">COLORKEY</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Colorkey</h5>
+                                    <span class="bg-violet-50 text-violet-700 text-[10px] font-bold px-2 py-1 rounded">Rank #10</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">1.800.547</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">378 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-amber-50 to-amber-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-amber-600">HAPAS</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Hapas</h5>
+                                    <span class="bg-violet-50 text-violet-700 text-[10px] font-bold px-2 py-1 rounded">Rank #11</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">334.601</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">328 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-emerald-600">BOBBY</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Bobby</h5>
+                                    <span class="bg-violet-50 text-violet-700 text-[10px] font-bold px-2 py-1 rounded">Rank #12</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">799.869</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">318 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-lime-50 to-lime-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-lime-600">NESTY</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Nesty</h5>
+                                    <span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-1 rounded">Rank #13</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">1.809.574</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">287 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-sky-50 to-sky-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-sm font-black text-sky-600">LA ROCHE-POSAY</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">La Roche-Posay</h5>
+                                    <span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-1 rounded">Rank #14</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">545.829</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">249 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-fuchsia-50 to-fuchsia-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-fuchsia-600">LOCK&LOCK</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Lock&Lock</h5>
+                                    <span class="bg-orange-50 text-orange-700 text-[10px] font-bold px-2 py-1 rounded">Rank #15</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">752.180</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">237 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-rose-50 to-rose-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-3xl font-black text-rose-600">LG</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">LG</h5>
+                                    <span class="bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-1 rounded">Rank #16</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">74.751</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">233 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-orange-600">CARSLAN</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Carslan</h5>
+                                    <span class="bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-1 rounded">Rank #17</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">914.485</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">230 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-blue-600">COOLMATE</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Coolmate</h5>
+                                    <span class="bg-rose-50 text-rose-700 text-[10px] font-bold px-2 py-1 rounded">Rank #18</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">913.947</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">206 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-slate-100 to-slate-200 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-slate-700">ADIDAS</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Adidas</h5>
+                                    <span class="bg-slate-50 text-slate-700 text-[10px] font-bold px-2 py-1 rounded">Rank #19</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">209.761</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">206 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 rounded-xl overflow-hidden hover:shadow-lg transition-all">
+                            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4">
+                                <div class="flex items-center justify-center h-20">
+                                    <span class="text-xl font-black text-yellow-700">GUNO MATE</span>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex justify-between items-start mb-4">
+                                    <h5 class="text-lg font-bold text-slate-900">Guno Mate</h5>
+                                    <span class="bg-slate-50 text-slate-700 text-[10px] font-bold px-2 py-1 rounded">Rank #20</span>
+                                </div>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between"><span>Sản phẩm bán trong kỳ:</span> <span class="font-bold">448.323</span></div>
+                                    <div class="flex justify-between text-blue-600"><span>Doanh số kỳ:</span> <span class="font-bold">204 tỷ</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: VIDEO -->
+        <div id="content-video" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">🎬 Video Phân tích Chuyên sâu</h2>
+                <p class="text-slate-600">Tìm hiểu chi tiết về xu hướng và cơ hội phát triển thị trường TMĐT Việt Nam</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <div class="video-wrapper">
+                            <video controls controlsList="nodownload" class="w-full">
+                                <source src="TMDT_Viet_Nam.mp4" type="video/mp4">
+                                Trình duyệt của bạn không hỗ trợ video.
+                            </video>
+                        </div>
+                        <div class="mt-6">
+                            <h3 class="text-xl font-bold text-slate-900 mb-3">Phân tích Thị trường Thương mại Điện tử Việt Nam 2025</h3>
+                            <div class="flex items-center gap-4 text-sm text-slate-600 mb-4">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Thời lượng: 5:56
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    Cập nhật: 15/01/2026
+                                </span>
+                            </div>
+                            <p class="text-slate-600 leading-relaxed">
+                                Video cung cấp bức tranh toàn cảnh thị trường TMĐT Việt Nam, phản ánh giai đoạn tăng trưởng đi kèm sự sàng lọc mạnh mẽ của các nhà bán hàng. 
+                                Nội dung tập trung phân tích sự chuyển dịch hành vi tiêu dùng, cấu trúc cạnh tranh giữa các sàn và những thay đổi then chốt đang tái định hình thị trường.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                        <h4 class="font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Nội dung chính
+                        </h4>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Tổng quan thị trường TMĐT Việt Nam 2025</span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Sự dịch chuyển hành vi tiêu dùng số</span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Cạnh tranh nền tảng Thương mại điện tử (Shopee & TikTok Shop)</span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Bài học thành công cho nhà bán hàng</span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Dự báo & chiến lược kinh doanh 2026</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-2xl border border-orange-200">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-orange-600 p-2 rounded-lg">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-slate-900">Key Insights</h4>
+                        </div>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-slate-700"><strong>429,7 nghìn</strong> tỷ đồng tổng chi tiêu TMĐT năm 2025</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-slate-700"><strong>48.000</strong> nhà bán rời khỏi thị trường </span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-slate-700">Shopee & TikTok Shop chiếm <strong>97%</strong> thị phần</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-slate-700">Phân khúc <strong>10k – 100k</strong> giảm <strong>1,8%</strong> </span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <svg class="w-4 h-4 text-orange-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-slate-700">Phân khúc <strong> ≥ 200k</strong> tăng <strong>0,2–0,4%</strong> </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TÀI LIỆU -->
+        <div id="content-document" class="tab-content">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">📚 Tài liệu đọc</h2>
+                <p class="text-slate-600">Báo cáo chi tiết và dữ liệu chuyên sâu về thị trường Thương mại Điện tử</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-slate-900 flex items-center gap-3">
+                            <svg class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Vietnam E-commerce Report 2025
+                        </h3>
+                        <a href="Vietnam_E-commerce_2025.pdf" download class="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 shadow-lg shadow-orange-200 transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            Tải PDF
+                        </a>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-xl p-8 border-2 border-dashed border-slate-200 min-h-[600px] flex items-center justify-center">
+                        <embed src="Vietnam_E-commerce_2025.pdf" type="application/pdf" width="100%" height="600px" class="rounded-lg shadow-lg" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-red-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 mb-2">Báo cáo Tổng quan Thị trường Thương mại điện tử Việt Nam</h4>
+                            <p class="text-sm text-slate-600 mb-4">
+                                Tài liệu phân tích bức tranh thị trường TMĐT Việt Nam năm 2025, tập trung vào tái cấu trúc thị trường, sàng lọc nhà bán hàng và sự chuyển dịch hành vi tiêu dùng.
+                            </p>
+                            <div class="flex items-center gap-4 text-xs text-slate-500">
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                    12 trang
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                    </svg>
+                                    11.8 MB
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    2025
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="bg-green-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 mb-2">Nhận định chính</h4>
+                            <p class="text-sm text-slate-600 mb-4">
+                                </h4>
+                        <ul class="space-y-3 text-sm text-slate-600">
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Thị trường TMĐT Việt Nam năm 2025 tiếp tục tăng trưởng.</span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Quá trình tái cấu trúc và sàng lọc nhà bán hàng diễn ra rõ rệt.</span>
+                            </li>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Cạnh tranh giữa các sàn thương mai điện tử. </span>
+                            </li>
+                            <li class="flex gap-2">
+                                <span class="text-orange-600 font-bold">•</span>
+                                <span>Hành vi tiêu dùng chuyển từ giá rẻ sang giá trị và chất lượng. </span>
+                            </li>
+                               
+                            <!-- </p>
+                            <a href="data.csv" download class="inline-flex items-center gap-2 text-sm font-semibold text-green-600 hover:text-green-700">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg> -->
+                               
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-100">
+                <h4 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Nguồn thông tin
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+                    <div>
+                        <p class="text-slate-600 mb-1">Nguồn dữ liệu</p>
+                        <p class="font-semibold text-slate-900">Metric.vn</p>
+                    </div>
+                    <div>
+                        <p class="text-slate-600 mb-1">Phạm vi dữ liệu</p>
+                        <p class="font-semibold text-slate-900">Phạm vi thời gian: 2024–2025</p>
+                        <p class="font-semibold text-slate-900">Phạm vi địa lý: Việt Nam</p>
+                        <!-- <p class="font-semibold text-slate-900">Đối tượng dữ liệu: Sàn TMĐT, sản phẩm, đơn hàng, hành vi người dùng. </p> -->
+                    </div>
+                    <div>
+                        <p class="text-slate-600 mb-1">Công cụ hỗ trợ: </p>
+                        <p class="font-semibold text-slate-900">Notebook LM hỗ trợ tổng hợp và kiểm tra tính nhất quán của nội dung phân tích.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="max-w-7xl mx-auto px-4 py-12 text-center text-slate-400 text-xs border-t border-slate-200 mt-10">
+        <p>© 2026 Hệ thống Phân tích Dữ liệu TMĐT Việt Nam. Dữ liệu mang tính chất tham khảo tại thời điểm báo cáo.</p>
+    </footer>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById('content-' + tabName).classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        Chart.register(ChartDataLabels);
+        const platforms = ['Shopee', 'TikTok', 'Lazada', 'Tiki'];
+        const colors = ['#f97316', '#1e293b', '#3b82f6', '#0ea5e9'];
+
+        Chart.defaults.plugins.datalabels = {
+            color: '#ffff',
+            font: { weight: 'bold', size: 11 }
+        };
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20, font: { family: 'Inter', size: 12 } } }
+            }
+        };
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'doughnut',
+            data: {
+                labels: platforms,
+                datasets: [{
+                    data: [65373.6, 56317.6, 2504.2, 50.2],
+                    backgroundColor: colors,
+                    borderWidth: 4,
+                    borderColor: '#ffffff',
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    datalabels: {
+                        color: '#ffff',
+                        font: { weight: 'bold' },
+                        formatter: (val, ctx) => {
+                            const sum = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+                            return (val * 100 / sum).toFixed(1) + '%';
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('unitsSoldChart'), {
+            type: 'pie',
+            data: {
+                labels: platforms,
+                datasets: [{
+                    data: [561.2, 461.2, 10.9, 0.235],
+                    backgroundColor: colors,
+                    borderWidth: 2
+                }]
+            },
+            options: commonOptions
+        });
+
+        new Chart(document.getElementById('categoryChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Nhà Cửa', 'Làm Đẹp', 'Thời Trang Nữ', 'Bách Hoá', 'Phụ Kiện', 'Thời Trang Nam', 'Văn Phòng Phẩm', 'Thời Trang Trẻ Em', 'Thể Thao', 'Sức Khoẻ','Mẹ & Bé', 'Điện Thoại'],
+                datasets: [
+                    { label: 'Shopee', data: [127.5, 70.1, 49.3, 36.9, 28.7, 14.1, 34.4, 19.1, 18.0, 19.5, 20.6, 22.5], backgroundColor: '#f97316', borderRadius: 4 },
+                    { label: 'TikTok', data: [73.7, 69.0, 74.5, 38.1, 22.5, 29.6, 8.7, 20.5, 17.4, 15.8, 14.0, 11.5], backgroundColor: '#1e293b', borderRadius: 4 }
+                ]
+            },
+            options: {
+                ...commonOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { grid: { color: '#f3f4f6' } }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('priceRangeChart'), {
+            type: 'bar',
+            data: {
+                labels: ['< 10k', '10k-50k', '50k-100k', '100k-200k', '200k-500k', '500k-1M', '1M-2M', '2M-5M', '> 5M'],
+                datasets: [
+                    { label: 'Shopee', data: [21.8, 239.0, 109.1, 93.2, 60.7, 12.6, 3.5, 1.2, 0.1], backgroundColor: '#f97316' },
+                    { label: 'TikTok', data: [52.4, 128.6, 129.8, 118.6, 30.7, 0.9, 3.9, 1.7, 0.0], backgroundColor: '#1e293b' }
+                ]
+            },
+            options: { ...commonOptions, borderRadius: 6 }
+        });
+
+        new Chart(document.getElementById('shopTypeChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Thường', 'Chính hãng'],
+                datasets: [{ data: [832.2, 201.3], backgroundColor: ['#3b82f6', '#f97316'] }]
+            },
+            options: { ...commonOptions, cutout: '80%' }
+        });
+
+        new Chart(document.getElementById('regionChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Hà Nội', 'TP. HCM', 'Nước ngoài', 'Bắc Ninh', 'Bình Dương'],
+                datasets: [{
+                    data: [203.1, 188.5, 35.3, 19.2, 6.8],
+                    backgroundColor: '#3b82f6',
+                    borderRadius: 20,
+                    barThickness: 12
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    datalabels: {
+                        color: '#64748b', 
+                        align: 'end',
+                        anchor: 'end',
+                        formatter: (v) => {
+                            if (!v) return '';
+                            return v + 'tr';
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
